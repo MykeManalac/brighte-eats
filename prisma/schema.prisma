@@ -1,0 +1,31 @@
+datasource db {
+  provider = "mysql"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Lead {
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  mobile    String
+  postcode  String
+  services  Service[]
+  createdAt DateTime @default(now())
+
+}
+
+model Service {
+  id     String      @id @default(uuid())
+  type   ServiceType
+  lead   Lead        @relation(fields: [leadId], references: [id])
+  leadId String
+}
+
+enum ServiceType {
+  DELIVERY
+  PICKUP
+  PAYMENT
+}
