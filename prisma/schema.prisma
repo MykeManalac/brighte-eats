@@ -1,5 +1,7 @@
 datasource db {
   provider = "mysql"
+  url      = env("DATABASE_URL")
+  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
 }
 
 generator client {
@@ -10,18 +12,11 @@ model Lead {
   id        String   @id @default(uuid())
   name      String
   email     String   @unique
-  mobile    String
+  mobile    String   @unique
   postcode  String
-  services  Service[]
+  services  ServiceType
   createdAt DateTime @default(now())
 
-}
-
-model Service {
-  id     String      @id @default(uuid())
-  type   ServiceType
-  lead   Lead        @relation(fields: [leadId], references: [id])
-  leadId String
 }
 
 enum ServiceType {

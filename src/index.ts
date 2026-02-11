@@ -1,13 +1,12 @@
-import express from 'express';
+import { ApolloServer } from "apollo-server";
+import { typeDefs } from "./graphql/typeDefs.js";
+import { resolvers } from "./graphql/resolvers.js";
 
-const app = express();
-const port = 3000;
-
-app.get('/',(req,res)=>{
-    res.send('Hellooooo');
+const server = new ApolloServer({
+  typeDefs,
+  resolvers,
 });
 
-app.listen(port,()=>{
-    console.log('listening to port');
+server.listen({ port: process.env.PORT }).then(({ url }) => {
+  console.log(`🚀 Brighte Eats API running at ${url}`);
 });
-
