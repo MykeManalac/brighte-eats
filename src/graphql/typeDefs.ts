@@ -1,6 +1,4 @@
-import { gql } from "apollo-server";
-
-export const typeDefs = gql`
+export const typeDefs = `#graphql
   enum ServiceType {
     DELIVERY
     PICKUP
@@ -14,7 +12,6 @@ export const typeDefs = gql`
     mobile: String!
     postcode: String!
     services: ServiceType!
-    createdAt: String!
   }
 
   type Query {
@@ -23,12 +20,14 @@ export const typeDefs = gql`
   }
 
   type Mutation {
-    register(
-      name: String!
-      email: String!
-      mobile: String!
-      postcode: String!
-      services: ServiceType!
-    ): Lead!
+    registerLead( lead: LeadInput): Lead!
+  }
+
+  input LeadInput {
+    name: String!
+    email: String!
+    mobile: String!
+    postcode: String!
+    services: ServiceType!
   }
 `;

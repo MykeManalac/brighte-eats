@@ -1,31 +1,45 @@
+import { ApolloError } from "apollo-server";
 import { LeadService } from "../services/leadService.js";
-import type { Lead, ServiceType } from "@prisma/client";
+import type { Lead } from "@prisma/client";
+import type { RegisterLeadArg } from "../types/lead.js";
+import LeadError from "../errors/leadError.js";
 
 const leadService = new LeadService();
 
 export const resolvers = {
   Query: {
     leads: async (): Promise<Lead[]> => {
-      return leadService.getLeads();
+      try {
+        return await leadService.getLeads();
+      } catch (error: unknown) {
+        const leadError = error as LeadError;
+        throw new ApolloError(leadError.message, leadError.code);
+      }
     },
 
-    lead: async (_: any, params: { id: string }): Promise<Lead | null> => {
-      return leadService.getLeadById(params.id);
+    lead: async (_: unknown, args: { id: string }): Promise<Lead | null> => {
+      try {
+        return await leadService.getLeadById(args.id);
+      } catch (error: unknown) {
+        const leadError = error as LeadError;
+        throw new ApolloError(leadError.message, leadError.code);
+      }
     },
   },
 
   Mutation: {
-    register: async (
-      _: any,
-      params: {
-        name: string;
-        email: string;
-        mobile: string;
-        postcode: string;
-        services: ServiceType;
+    registerLead: async (
+      _: unknown,
+      args: {
+        lead: RegisterLeadArg;
       },
     ): Promise<Lead> => {
-      return leadService.createLead(params);
+      try {
+        return await leadService.createLead(args.lead);
+      } catch (error: unknown) {
+        const leadError = error as LeadError;
+        throw new ApolloError(leadError.message, leadError.code);
+      }
     },
   },
 };
