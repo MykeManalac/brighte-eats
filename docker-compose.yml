@@ -1,8 +1,8 @@
 
 services:
-  mysql:
+  mysqlDB:
     image: mysql:8.0
-    container_name : brighte_database
+    container_name: brighte_database
     restart: always
     env_file:
       - .env
@@ -11,6 +11,32 @@ services:
     volumes:
       - mysql_data:/var/lib/mysql
       - ./docker/mysql-init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 5s
+      retries: 10
+      timeout: 5s
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: brighte_api
+    ports:
+      - "4000:4000"
+    env_file:
+      - .env
+    volumes:
+      - .:/app
+      - /app/node_modules
+    depends_on:
+      mysqlDB:
+        condition: service_healthy
+    command: >
+      sh -c "
+      ./docker/wait-for-it.sh mysqlDB:3306 -- npx prisma migrate deploy &&
+      npm run start:dev
+      "
 
 volumes:
   mysql_data:
