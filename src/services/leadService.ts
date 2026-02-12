@@ -34,7 +34,7 @@ export class LeadService {
       throw new LeadError(
         LEAD_ERRORS.GET_LEAD,
         error instanceof LeadError
-          ? error.code!
+          ? error.code || ERROR_CODES.INTERNAL_SERVER_ERROR
           : ERROR_CODES.INTERNAL_SERVER_ERROR,
       );
     }

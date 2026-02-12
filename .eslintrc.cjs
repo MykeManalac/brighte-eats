@@ -7,8 +7,8 @@ module.exports = {
   plugins: ["@typescript-eslint"],
   extends: ["plugin:@typescript-eslint/recommended"],
   rules: {
-    "no-unused-vars": ["warn"],
-    "no-console": ["warn"],
+    "no-unused-vars": ["error"],
+    "no-console": ["error"],
   },
   overrides: [
     {
